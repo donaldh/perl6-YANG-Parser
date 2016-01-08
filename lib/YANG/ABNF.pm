@@ -22,7 +22,7 @@ data-def-stmt = container-stmt / leaf-stmt / leaf-list-stmt / list-stmt / choice
 
 yang-version-stmt = yang-version-keyword sep yang-version-arg-str optsep stmtend
 
-yang-version-arg-str = < a string that matches the rule yang-version-arg >
+yang-version-arg-str = yang-version-arg ; < a string that matches the rule yang-version-arg >
 
 yang-version-arg = "1"
 
@@ -186,7 +186,7 @@ list-stmt = list-keyword sep identifier-arg-str optsep "{" stmtsep [when-stmt st
 
 key-stmt = key-keyword sep key-arg-str stmtend
 
-key-arg-str = < a string that matches the rule key-arg >
+key-arg-str = key-arg ; < a string that matches the rule key-arg >
 
 key-arg = node-identifier *(sep node-identifier)
 
@@ -266,7 +266,7 @@ deviate-delete-stmt = deviate-keyword sep delete-keyword optsep (";" / "{" stmts
 
 deviate-replace-stmt = deviate-keyword sep replace-keyword optsep (";" / "{" stmtsep [type-stmt stmtsep] [units-stmt stmtsep] [default-stmt stmtsep] [config-stmt stmtsep] [mandatory-stmt stmtsep] [min-elements-stmt stmtsep] [max-elements-stmt stmtsep] "}")
 
-range-arg-str = < a string that matches the rule range-arg >
+range-arg-str = range-arg ; < a string that matches the rule range-arg >
 
 range-arg = range-part *(optsep "|" optsep range-part)
 
@@ -274,7 +274,7 @@ range-part = range-boundary [optsep ".." optsep range-boundary]
 
 range-boundary = min-keyword / max-keyword / integer-value / decimal-value
 
-length-arg-str = < a string that matches the rule length-arg >
+length-arg-str = length-arg ; < a string that matches the rule length-arg >
 
 length-arg = length-part *(optsep "|" optsep length-part)
 
@@ -282,7 +282,7 @@ length-part = length-boundary [optsep ".." optsep length-boundary]
 
 length-boundary = min-keyword / max-keyword / non-negative-integer-value
 
-date-arg-str = < a string that matches the rule date-arg >
+date-arg-str = date-arg ; < a string that matches the rule date-arg >
 
 date-arg = 4DIGIT "-" 2DIGIT "-" 2DIGIT
 
@@ -302,7 +302,7 @@ predicate-expr = (node-identifier / ".") *WSP "=" *WSP ((DQUOTE string DQUOTE) /
 
 pos = non-negative-integer-value
 
-path-arg-str = < a string that matches the rule path-arg >
+path-arg-str = path-arg ; < a string that matches the rule path-arg >
 
 path-arg = absolute-path / relative-path
 
@@ -403,13 +403,13 @@ user-keyword = "user"
 
 current-function-invocation = current-keyword *WSP "(" *WSP ")"
 
-prefix-arg-str = < a string that matches the rule prefix-arg >
+prefix-arg-str = prefix-arg ; < a string that matches the rule prefix-arg >
 
 prefix-arg = prefix
 
 prefix = identifier
 
-identifier-arg-str = < a string that matches the rule identifier-arg >
+identifier-arg-str = identifier ; < a string that matches the rule identifier-arg >
 
 identifier-arg = identifier
 
