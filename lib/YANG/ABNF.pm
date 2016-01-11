@@ -32,7 +32,7 @@ include-stmt = include-keyword sep identifier-arg-str optsep (";" / "{" stmtsep 
 
 namespace-stmt = namespace-keyword sep uri-str optsep stmtend
 
-uri-str = URI ; < a string that matches the rule URI in RFC 3986 >
+uri-str = DQUOTE URI DQUOTE; < a string that matches the rule URI in RFC 3986 >
 
 prefix-stmt = prefix-keyword sep prefix-arg-str optsep stmtend
 
@@ -415,11 +415,11 @@ identifier-arg = identifier
 
 identifier = (ALPHA / "_") *(ALPHA / DIGIT / "_" / "-" / ".")
 
-identifier-ref-arg-str = < a string that matches the rule identifier-ref-arg >
+identifier-ref-arg-str = identifier-ref-arg ; < a string that matches the rule identifier-ref-arg >
 
 identifier-ref-arg = [prefix ":"] identifier
 
-string = < an unquoted string as returned by the scanner >
+string = DQUOTE *( ALPHA / DIGIT / " " / "_" / "-" / "." ) DQUOTE ; < an unquoted string as returned by the scanner >
 
 integer-value = ("-" non-negative-integer-value) / non-negative-integer-value
 
