@@ -66,7 +66,6 @@ grammar YANG::Grammar {
     }
 
     rule import-stmt {
-
         'import' <module=.value> '{'
         'prefix' <prefix=.value> ';'
         <revision-stmt>?
@@ -118,7 +117,77 @@ grammar YANG::Grammar {
     }
 
     rule type-stmt {
-        'type' <value> ';' # TODO type-body-stmts
+        'type' <value> [ ';' | '{' [
+              <range-stmt> | <fraction-digits-stmt> | <string-restrictions> |
+              <enum-stmt> | <path-stmt> | <base-stmt> |
+              <require-instance-stmt> | <bits-specification> | <union-specification>
+         ] '}' ]
+    }
+
+    rule range-stmt {
+        'range' <value> [ ';' | '{' # TODO children
+                          '}' ]
+    }
+
+    rule fraction-digits-stmt {
+        'fraction-digits' <value> ';'
+    }
+
+    rule string-restrictions {
+        <length-stmt>
+        <pattern-stmt>*
+    }
+
+    rule length-stmt {
+        'length' <length-arg> [ ';' | '{' # TODO children
+                                '}' ]
+    }
+
+    rule length-arg {
+        <length-part>*
+    }
+
+    rule length-part {
+        <length-boundary>* # TODO
+    }
+
+    rule length-boundary {
+        'min' | 'max' | \d+
+    }
+
+    rule enum-stmt {
+        'enum' <value> [ ';' | '{' # TODO children
+                         '}' ]
+    }
+
+    rule path-stmt {
+        'path' <value> ';'
+        <require-instance-stmt>?
+    }
+
+    rule require-instance-stmt {
+        'require-instance' <truth-value> ';'
+    }
+
+    rule truth-value {
+        'true' | 'false'
+    }
+
+    rule base-stmt {
+        'base' <value> ';'
+    }
+
+    rule bits-specification {
+        <bit-stmt>+
+    }
+
+    rule bit-stmt {
+        'bit' <value> [ ';' | '{' # TODO children
+                        '}' ]
+    }
+
+    rule union-specification {
+        <type-stmt>+
     }
 
     rule grouping-stmt {
@@ -252,7 +321,7 @@ grammar YANG::Grammar {
     }
 
     token dquoted {
-        '"' <-[ " ]> + '"'
+        ['"'] <-[ " ]> + '"'
     }
 
     token squoted {
