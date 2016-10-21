@@ -9,29 +9,31 @@ grammar YANG::GrammarIsh {
     class Node {
         has $.type;
         has $.value;
-        has @.children;
 
         method dump(@parts, Str $indent = '') {
-            if @!children {
-                @parts.push: "{$indent}{$!type} {$!value if $!value} \{";
-                for @!children -> $c {
-                    $c.dump(@parts, $indent ~ INDENT);
-                }
-                @parts.push: "{$indent}\}";
+            my $concatenated = $!value.join("+\n{$indent}{INDENT}");
+            if $!type ~~ 'description' | 'contact' | 'organization' | 'reference' {
+                @parts.push: "{$indent}{$!type}";
+                @parts.push: "{$indent}{INDENT}{$concatenated};";
             } else {
-                if $!type ~~ 'description' | 'contact' | 'organization' | 'reference' {
-                    @parts.push: "{$indent}{$!type}";
-                    @parts.push: "{$indent}{INDENT}{$!value};";
-                } else {
-                    my $concatenated = $!value.join("+\n{$indent}{INDENT}");
-                    @parts.push: "{$indent}{$!type} {$concatenated};";
-                }
+                @parts.push: "{$indent}{$!type} {$concatenated};";
             }
         }
     }
 
-    class Module is Node {
+    class Container is Node {
+        has @.children;
 
+        method dump(@parts, Str $indent = '') {
+            @parts.push: "{$indent}{$.type}{' ' ~ $.value if $.value} \{";
+            for @!children -> $c {
+                $c.dump(@parts, $indent ~ INDENT);
+            }
+            @parts.push: "{$indent}\}";
+        }
+    }
+
+    class Module is Container {
         method Str() {
             my @parts;
             self.dump(@parts);
@@ -60,9 +62,10 @@ grammar YANG::GrammarIsh {
         }
 
         method definition($/) {
-            make Node.new(
+            my $val = ~$<value> if $<value>;
+            make Container.new(
                 type => ~$<keyword>,
-                value => ~$<value>,
+                value => $val,
                 children => $<contents>.map(*.made)
             );
         }
@@ -80,17 +83,17 @@ grammar YANG::GrammarIsh {
     }
 
     rule contents {
-        <item=.statement> | <item=.definition>
-    }
-
-    rule statement {
-        <keyword> <value> [ '+' <value> ]* ';'
+        <item=.definition> | <item=.statement>
     }
 
     rule definition {
         <keyword>  <value>? '{'
             <contents>*
         '}'
+    }
+
+    rule statement {
+        <keyword> <value> [ '+' <value> ]* ';'
     }
 
     token keyword {
